@@ -149,72 +149,36 @@ void useraccountshow(){
 
 
 
-void deleteaccount(){
-        long int accno;
-        string delchoice;
-        
-        cout<<"Enter the account number of the user - ";
-        cin>>  accno;
-        for(Account &account :accounts){
-            if(accno == account.getAccountnum()){
-                account.showacc();
-                std::cout<<"\nPLEASE ENTER Y TO DELETE THE ACCOUNT OR NO TO CANCEL - ";
-                cin>>delchoice;
-                if(delchoice == "y" || delchoice == "Y"){
-                account.isactive = false;
-                cout<<"Account deleted Successfully"<<std::endl;
-                saveAccounts();
-                return;
-                }
-                else if( delchoice == "N" or delchoice == "n"){
-                    return;
-             }
-        }
-    }
-    std::cerr<<"No account found "<<std::endl;
-}
-
-
-/// Function to reactivate the account 
-
-    void reactivateaccount(){
+void deleteaccount() {
     long int accno;
-    string accchoice;
-        cout<<"Enter the account number - ";
-        cin>>accno;
-
-        for( Account &account :accounts){
-            
-                if(accno == account.getAccountnum()){
-                account.showacc();
-                std::cout<<"\nPLEASE ENTER Y TO ACTIVATE THE ACCOUNT OR NO TO CANCEL - ";
-                cin>>accchoice;
-                if(accchoice == "y" || accchoice == "Y"){
-                account.isactive = true;
-                cout<<"Account activated Successfully"<<std::endl;
-                saveAccounts();
-                return;
-                }
-                else if( accchoice == "N" or accchoice == "n"){
-                return;
-            }
+    cout << "Enter the account number of the user - ";
+    cin >> accno;
+    bool found = false;
+    for (Account &account : accounts) {
+        if (accno == account.getAccountnum()) {
+            account.isactive = false; 
+            found = true;
+            break;
         }
     }
-    std::cerr<<"Account not found"<<std::endl;
+    if (found) {
+        saveAccounts();
+        cout << "Account deleted Successfully" << endl;
+    } else {
+        cerr << "No account found" << endl;
+    }
 }
-    
+   
 
-    void saveAccounts()
-    {
-        std::ofstream write("accounts.txt", std::ios::trunc);
+   void saveAccounts() {
+    std::ofstream write("accounts_new.txt", std::ios::trunc);
 
-        if (!write)
-        {
-            std::cerr << "Failed to open the file." << std::endl;
-            return;
-        }
-        for (const Account &account : accounts)
-        {
+    if (!write) {
+        std::cerr << "Failed to open the file." << std::endl;
+        return;
+    }
+    for (const Account &account : accounts) {
+        if (account.isactive) {
             write << account.getUsername() << "\n";
             write << account.getPassword() << "\n";
             write << account.getName() << "\n";
@@ -224,11 +188,14 @@ void deleteaccount(){
             write << account.getbyear() << "\n";
             write << account.getbmonth() << "\n";
             write << account.getbday() << "\n";
-            write << account.isactive<<"\n";
-            write << "\n";
         }
-        write.close();
     }
+    write.close();
+
+   
+    std::remove("accounts.txt");
+    std::rename("accounts_new.txt", "accounts.txt"); 
+}
 
     void loadAccounts()
     {
@@ -445,8 +412,8 @@ void deleteaccount(){
                 std::cout << "3. Withdraw money\n";
                 std::cout << "4. Show account\n";
                 std::cout <<"5. Delete an account\n";
-                std::cout <<"6. Activate an account\n";
-                std::cout <<"7. Go back\n";
+                std::cout <<"6. Go Back\n";
+                
                 std::cin >> choice;
                 clearscreen();
 
@@ -468,15 +435,14 @@ void deleteaccount(){
                     deleteaccount();
                     break;
                 case 6:
-                    reactivateaccount();
-                    break;
-                case 7:
                     return;
+                    break;
+               
 
                 default:
                     std::cout << "Invalid choice, please select between 1-5\n";
                 }
-            } while (choice != 7);
+            } while (choice != 6);
         }
         else
         {
