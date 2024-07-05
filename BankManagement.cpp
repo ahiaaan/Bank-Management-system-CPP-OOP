@@ -1,4 +1,5 @@
-//@author Ahian Kabir Abid
+// @author Ahian Kabir Abid
+
 
 #include <iostream>
 #include <vector>
@@ -164,15 +165,14 @@ void deleteaccount() {
         }
     }
     if (found) {
-        saveAccounts();
+        saveAccounts(); // Save changes to a new file and replace the old file
         cout << "Account deleted Successfully" << endl;
     } else {
         cerr << "No account found" << endl;
     }
 }
-   
 
-   void saveAccounts() {
+void saveAccounts() {
     std::ofstream write("accounts_new.txt", std::ios::trunc);
 
     if (!write) {
@@ -232,7 +232,7 @@ void deleteaccount() {
             read.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             read >> byear >> bmonth >> bday;
             read.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            read>>isactive;
+            
         
 
             account.setUsername(username);
@@ -244,7 +244,7 @@ void deleteaccount() {
             account.setbyear(byear);
             account.setbmonth(bmonth);
             account.setbday(bday);
-            account.isactive = isactive;
+            
 
             accounts.push_back(account);
         }
@@ -603,6 +603,7 @@ void deleteaccount() {
         cout<<"Enter the ammont - "<<std::endl;
         cin>>  withdrawamm;
         loggedinaccount-> withdraw(withdrawamm);
+        saveAccounts();
     }
 
 
@@ -665,8 +666,6 @@ void deleteaccount() {
     }
 
 
-
-
 };
 
 
@@ -675,6 +674,6 @@ int main()
     Bank bank;
     bank.loadAccounts();
     bank.mainpage();
-    bank.saveAccounts();
+    // bank.saveAccounts();
     return 0;
 }
